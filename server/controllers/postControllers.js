@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { findById } = require('../models/Post.js');
+// const { findById } = require('../models/Post.js');
 
 const PostMessage = require('../models/Post.js');
 
@@ -53,10 +53,6 @@ exports.createPost = async (req, res) => {
         res.status(409).json({ message: error.message });
     }
 
-
-
-
-
 }
 
 
@@ -83,8 +79,8 @@ exports.likePost= async (req,res)=>{
 
     if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send(`No post with id : ${_id}`);
 
-    const post = PostMessage.findById(_id);
-    const updatedPost= await PostMessage.findByIdAndUpdate(_id,{likeCount=post.likeCount+1}, {new:true});
+    const post = await PostMessage.findById(_id);
+    const updatedPost= await PostMessage.findByIdAndUpdate(_id,{likeCount:post.likeCount+1}, {new:true});
     res.json(updatedPost);
 
 } 

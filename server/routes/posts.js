@@ -1,5 +1,5 @@
 
-const { application } = require('express');
+// const { application } = require('express');
 const express = require('express');
 const { getPosts, createPost, deletePost, updatePost,likePost } = require('../controllers/postControllers');
 
@@ -10,5 +10,6 @@ postRouter.get('/', getPosts);
 postRouter.post('/', createPost);
 postRouter.delete('/:id', deletePost);
 postRouter.patch('/:id',updatePost);
-postRouter.patch('/:id/likePost',likePost)
+postRouter.patch('/:id/likePost',likePost);
+
 module.exports = postRouter;

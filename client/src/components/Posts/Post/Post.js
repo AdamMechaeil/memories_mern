@@ -9,7 +9,7 @@ import { GlobalContext } from '../../../context/GlobalContext';
 export const Post = ({ post, setCurrentId }) => {
 
     const classes = useStyles();
-    const {deletePost}= useContext(GlobalContext);
+    const {deletePost,likePost}= useContext(GlobalContext);
 
     return (
         <Card className={classes.card}>
@@ -29,7 +29,7 @@ export const Post = ({ post, setCurrentId }) => {
           <Typography variant="body2" color="textSecondary" component="p">{post.message}</Typography>
         </CardContent>
         <CardActions className={classes.cardActions}>
-          <Button size="small" color="primary" onClick={()=>{}}><ThumbUpAltIcon fontSize="small" /> Like {post.likeCount} </Button>
+          <Button size="small" color="primary" onClick={()=>likePost(post._id)}><ThumbUpAltIcon fontSize="small" /> Like {post.likeCount} </Button>
           <Button size="small" color="primary" onClick={() => deletePost(post._id)}><DeleteIcon fontSize="small" /> Delete</Button>
         </CardActions>
       </Card>

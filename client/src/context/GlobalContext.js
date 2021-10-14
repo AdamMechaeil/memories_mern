@@ -102,7 +102,22 @@ export const GlobalProvider= ({children}) => {
      }
 
 
-     
+     async function likePost(id){
+
+        try {
+            
+            const {data} = await axios.patch(`http://localhost:5000/posts/${id}/likePost`);
+            dispatch({
+                type:'UPDATE',
+                payload: data
+            })
+
+        } catch (error) {
+            console.log(error)
+        }
+         
+
+     }
 
      async function deletePost(id){
 
@@ -131,7 +146,8 @@ export const GlobalProvider= ({children}) => {
     getPosts,
     createPost,
     deletePost,
-    updatePost
+    updatePost,
+    likePost
 }
 }>
   {children}
