@@ -1,31 +1,58 @@
 import React, {createContext,useReducer} from "react";
 import AppReducer from './AppReducer';
 import axios from 'axios';
+import authReducer from "./Auth";
 
 const initialState={
     
     posts:[],
+    user:null,
     error:null
 
 
 }
 
+const API = axios.create({ baseURL: 'http://localhost:5000' });
+
+API.interceptors.request.use((req) => {
+  if (localStorage.getItem('profile')) {
+    req.headers.authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`;
+  }
+
+  return req;
+});
+
+// mistake
 
 // Create Context
+
+// const combineReducers = (slices) => (state, action) =>
+//   Object.keys(slices).reduce( // use for..in loop, if you prefer it
+//     (acc, prop) => ({
+//       ...acc,
+//       [prop]: slices[prop](acc[prop], action),
+//     }),
+//     state
+//   );
 
 export const GlobalContext = createContext(initialState);
 
 export const GlobalProvider= ({children}) => {
+// mistake
+    // const rootreducer= combineReducers(AppReducer,authReducer);
 
- const [state,dispatch] = useReducer(AppReducer,initialState)
+ const [poststate,dispatch] = useReducer(AppReducer,initialState.posts)
+ const [userstate,dispatchuser] = useReducer(authReducer,initialState.user)
 
+ 
 
  // Actions
 
  async function getPosts(){
 
-    const { data } = await axios.get('http://localhost:5000/posts');
-   console.log(data)
+    const {data}   = await API.get('/posts');
+  
+   
     try {
         
         dispatch({
@@ -57,7 +84,7 @@ export const GlobalProvider= ({children}) => {
         
     
         try {
-            const {data} =  await axios.post('http://localhost:5000/posts',post);
+            const {data} =  await API.post('/posts',post);
                 
             dispatch({
                     
@@ -87,7 +114,7 @@ export const GlobalProvider= ({children}) => {
          
         try {
 
-          const {data}  = await axios.patch(`http://localhost:5000/posts/${id}`,updatedPost);
+          const {data}  = await API.patch(`/posts/${id}`,updatedPost);
        
            dispatch({
                type:'UPDATE',
@@ -106,7 +133,7 @@ export const GlobalProvider= ({children}) => {
 
         try {
             
-            const {data} = await axios.patch(`http://localhost:5000/posts/${id}/likePost`);
+            const {data} = await API.patch(`/posts/${id}/likePost`);
             dispatch({
                 type:'UPDATE',
                 payload: data
@@ -124,7 +151,7 @@ export const GlobalProvider= ({children}) => {
         try {
 
 
-           await axios.delete(`http://localhost:5000/posts/${id}`);
+           await API.delete(`/posts/${id}`);
 
             dispatch({
                     
@@ -139,15 +166,93 @@ export const GlobalProvider= ({children}) => {
 
      }
 
+     async function googleSignIn(result,token){
+        try {
+            
+            
+            const data={result,token};
+            
+            dispatchuser({ type: 'AUTH', 
+            payload: { 
+
+                data
+
+                } });
+        } catch (error) {
+            console.log(error);
+        }
+     }
+           
+    async function logout(){
+        try {
+            dispatchuser({
+                type: 'LOGOUT'
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function signin(formData,history){
+    
+        try {
+            
+            const  {data}= await API.post(`/user/signin`, formData); 
+           
+            dispatchuser(
+                {
+                    type: 'AUTH',
+                    payload: {
+                        data      
+                    }
+                }
+            );
+
+            history.push('/');
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
+    async function signup(formData,history){
+
+      try {
+        const result= await API.post(`/user/signup`, formData);
+        const data=result.data
+        dispatchuser(
+            {
+                type:'AUTH',
+                payload:{
+                    data 
+                }
+
+            }
+        )
+
+        history.push('/');
+
+      } catch (error) {
+          console.log(error);
+      }
+
+    }
+
 
       return(
 <GlobalContext.Provider value={{
-    posts:state.posts,
+    posts:poststate,
+    user:userstate,
     getPosts,
     createPost,
     deletePost,
     updatePost,
-    likePost
+    likePost,
+    googleSignIn,
+    logout,
+    signin,
+    signup
 }
 }>
   {children}

@@ -8,7 +8,7 @@ const colors= require('colors');
 const morgan= require('morgan');
 const postRouter= require('./routes/posts');
 const connectDB = require('./config/db');
-
+const userrouter= require('./routes/user');
 dotenv.config({ path: './config/config.env' });
 
 connectDB();
@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({
      
 app.use(morgan('dev'));
 app.use('/posts',postRouter);
+app.use('/user', userrouter);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT,()=>{
