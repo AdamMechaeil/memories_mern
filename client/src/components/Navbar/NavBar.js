@@ -25,8 +25,6 @@ export const NavBar = () => {
 
  useEffect(()=>{
   const token = user?.token;
-  // console.log(`user ${user}`)
-  // console.log(JSON.parse(localStorage.getItem('profile')))
   setUser(JSON.parse(localStorage.getItem('profile')))
  },[location])
 

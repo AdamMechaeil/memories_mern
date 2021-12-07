@@ -1,16 +1,32 @@
   
   export default (state,action)=>{
-  
     switch (action.type) {
-        case 'FETCH_ALL':
+      
+        // case 'FETCH_ALL':
 
-          return {
+        //   return {
              
-           ...state,
-            posts: action.payload
+        //    ...state,
+        //     posts: action.payload
 
 
-          }
+        //   }
+
+        case 'START_LOADING':
+          return { ...state, isLoading: true };
+        case 'END_LOADING':
+          return { ...state, isLoading: false };
+        case 'FETCH_ALL':
+          return {
+            ...state,
+            posts: action.payload.data,
+            currentPage: action.payload.currentPage,
+            numberOfPages: action.payload.numberOfPages,
+          };
+        case 'FETCH_BY_SEARCH':
+          return { ...state, posts: action.payload.data };
+        case 'FETCH_POST':
+          return { ...state, post: action.payload.post };
 
           case 'CREATE_POST' :
 
