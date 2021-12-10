@@ -1,7 +1,7 @@
 
  
 const express = require('express');
-const { getPosts, createPost,getPostsBySearch, getPost, deletePost, updatePost,likePost } = require('../controllers/postControllers');
+const { getPosts, createPost,getPostsBySearch, getPost, deletePost, updatePost,likePost,commentPost } = require('../controllers/postControllers');
 const {auth} = require('../middleware/auth');
 
 const postRouter = express.Router();
@@ -13,6 +13,7 @@ postRouter.post('/',auth, createPost);
 postRouter.delete('/:id',auth ,deletePost);
 postRouter.patch('/:id',auth,updatePost);
 postRouter.patch('/:id/likePost',auth,likePost);
+postRouter.post('/:id/commentPost', commentPost);
 
 module.exports = postRouter;
 

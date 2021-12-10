@@ -7,9 +7,9 @@ const initialState = {
 
     posts: [],
     user: null,
-    isLoading:false,
-    post:null,
-    numberOfPages:0
+    isLoading: false,
+    post: null,
+    numberOfPages: 0
 
 }
 
@@ -60,10 +60,10 @@ export const GlobalProvider = ({ children }) => {
     // }
 
 
-     async function getPost(id){
+    async function getPost(id) {
         try {
             dispatch({ type: 'START_LOADING' });
-            
+
             const { data } = await API.get(`/posts/${id}`);
 
 
@@ -73,7 +73,7 @@ export const GlobalProvider = ({ children }) => {
         }
     };
 
-    async function getPosts(page)  {
+    async function getPosts(page) {
         try {
             dispatch({ type: 'START_LOADING ' });
             const { data: { data, currentPage, numberOfPages } } = await API.get(`/posts?page=${page}`);
@@ -84,7 +84,7 @@ export const GlobalProvider = ({ children }) => {
         }
     };
 
-     async function getPostsBySearch(searchQuery){
+    async function getPostsBySearch(searchQuery) {
         try {
             dispatch({ type: 'START_LOADING' });
             const { data: { data } } = await API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
@@ -190,6 +190,21 @@ export const GlobalProvider = ({ children }) => {
 
     }
 
+    async function commentPost(value, id) {
+
+        try {
+            const { data } = await API.post(`/posts/${id}/commentPost`, { value });
+
+
+            dispatch({ type: 'COMMENT', payload: data });
+
+            return data.comments;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async function googleSignIn(result, token) {
         try {
 
@@ -270,9 +285,9 @@ export const GlobalProvider = ({ children }) => {
         <GlobalContext.Provider value={{
             posts: poststate,
             user: userstate,
-            isLoading:poststate.isLoading,
-            post:poststate.post,
-            numberOfPages:poststate.numberOfPages,
+            isLoading: poststate.isLoading,
+            post: poststate.post,
+            numberOfPages: poststate.numberOfPages,
             getPosts,
             getPost,
             getPostsBySearch,
@@ -280,6 +295,7 @@ export const GlobalProvider = ({ children }) => {
             deletePost,
             updatePost,
             likePost,
+            commentPost,
             googleSignIn,
             logout,
             signin,
